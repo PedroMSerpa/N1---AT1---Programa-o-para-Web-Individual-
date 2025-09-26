@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Carrinho de Compras — N1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --gap: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: #f6f7fb;
+      color: #222;
+    }
+
+    header {
+      background: #3a5bd1;
+      color: #fff;
+      padding: 18px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: var(--gap);
+    }
+
+    .grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-3 {
+      grid-template-columns: 1.2fr 1fr 1fr;
+    }
+
+    @media (max-width: 820px) {
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      font-size: 14px;
+      color: #333;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #dcdce6;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: #3a5bd1;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.ghost {
+      background: #edf0ff;
+      color: #3a5bd1;
+    }
+
+    button.danger {
+      background: #df3b57;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .row {
+      display: flex;
+      gap: var(--gap);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .space {
+      height: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .feedback {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #f0f5ff;
+      color: #0f3b9f;
+    }
+
+    .feedback.error {
+      background: #ffeef0;
+      color: #9f1027;
+    }
+
+    .tag {
+      font-size: 12px;
+      background: #f2f4f7;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tfoot td {
+      font-weight: 700;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .muted {
+      color: #666;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      background: #f6f7fb;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🛒 Pedro Serpa — Avaliação N1 </h1>
+  </header>
+  <main>
+    <!-- LOGIN -->
+    <section id="loginCard" class="card">
+      <h2>Login</h2>
+      <div class="grid grid-3">
+        <div>
+          <label for="user">Usuário</label>
+          <input id="user" type="text" placeholder="ex.: maria" />
+        </div>
+        <div>
+          <label for="pass">Senha</label>
+          <input id="pass" type="password" placeholder="••••••••" />
+        </div>
+        <div style="align-self:end">
+          <button id="btnLogin">Entrar</button>
+          <button id="btnLogout" class="ghost" disabled>Sair</button>
+        </div>
+      </div>
+      <div id="loginMsg" class="space"></div>
+      <div class="muted" style="margin-top:8px">
+        <span class="pill">Dica de teste: <strong>maria/123</strong> ou <strong>joao/abc</strong></span>
+      </div>
+    </section>
+
+    <!-- ÁREA PROTEGIDA -->
+    <section id="app" class="hidden">
+      <!-- BUSCA / CATÁLOGO -->
+      <div class="card">
+        <h2>Catálogo &amp; Busca</h2>
+        <div class="row">
+          <div style="flex:1">
+            <label for="q">Buscar por nome ou código</label>
+            <input id="q" type="text" placeholder="Ex.: arroz ou P1002" />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button id="btnBuscar">Buscar</button>
+            <button id="btnListar" class="ghost">Listar todos</button>
+          </div>
+        </div>
+        <div id="buscaMsg" class="space"></div>
+        <div id="listaProdutos" class="grid" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h2>2) Carrinho</h2>
+          <span class="tag"><span id="cartCount">0</span> item(s)</span>
+        </div>
+        <div id="carrinhoVazio" class="muted">Seu carrinho está vazio.</div>
+        <div id="tabelaCarrinhoWrap" class="hidden">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th class="right">Preço</th>
+                <th class="right">Qtd</th>
+                <th class="right">Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabelaCarrinho"></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="right">Total</td>
+                <td class="right" id="totalGeral">R$ 0,00</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>3) Fechamento da Compra</h2>
+        <div class="row">
+          <button id="btnFinalizar">Finalizar compra</button>
+          <button id="btnLimpar" class="ghost">Limpar carrinho</button>
+        </div>
+        <div id="checkoutMsg" class="space"></div>
+        <div id="resumoPedido"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+
+    const PRODUTOS = [
+      { codigo: "P1001", nome: "Arroz 5kg", preco: 26.90 },
+      { codigo: "P1002", nome: "Feijão 1kg", preco: 8.50 },
+      { codigo: "P1003", nome: "Macarrão 500g", preco: 4.99 },
+      { codigo: "P1004", nome: "Café 500g", preco: 17.80 },
+      { codigo: "P1005", nome: "Açúcar 1kg", preco: 5.70 },
+      { codigo: "P1006", nome: "Óleo 900ml", preco: 7.90 },
+      { codigo: "P1007", nome: "Leite 1L", preco: 4.20 },
+      { codigo: "P1008", nome: "Biscoito 200g", preco: 3.40 }
+    ];
+    let carrinho = []; 
+    var isLogado = false; 
+
+    const USUARIOS = [
+      { usuario: "maria", senha: "123", nome: "Maria" },
+      { usuario: "joao", senha: "abc", nome: "João" }
+    ];
+
+
+    const R$ = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    const el = (id) => document.getElementById(id);
+
+   
+    function login() {
+      const u = el('user').value.trim();
+      const p = el('pass').value;
+      const msg = el('loginMsg');
+
+      let ok = false;
+      for (let i = 0; i < USUARIOS.length; i++) {
+        if (USUARIOS[i].usuario === u && USUARIOS[i].senha === p) {
+          ok = true;
+          break;
+        }
+      }
+
+      if (ok) {
+        isLogado = true;
+        el('loginCard').classList.add('card'); 
+        msg.innerHTML = `<div class="feedback">✅ Bem-vindo(a), <strong>${u}</strong>! Acesso liberado.</div>`;
+        el('btnLogin').disabled = true;
+        el('btnLogout').disabled = false;
+        el('user').disabled = true;
+        el('pass').disabled = true;
+        el('app').classList.remove('hidden');
+      } else {
+        isLogado = false;
+        msg.innerHTML = `<div class="feedback error">❌ Usuário ou senha inválidos.</div>`;
+      }
+    }
+
+    function logout() {
+      isLogado = false;
+      el('btnLogin').disabled = false;
+      el('btnLogout').disabled = true;
+      el('user').disabled = false; el('user').value = "";
+      el('pass').disabled = false; el('pass').value = "";
+      el('loginMsg').innerHTML = "";
+      el('app').classList.add('hidden');
+      limparCarrinho();
+      el('buscaMsg').innerHTML = "";
+      el('resumoPedido').innerHTML = "";
+      el('checkoutMsg').innerHTML = "";
+      el('listaProdutos').innerHTML = "";
+    }
+
+    function renderListaProdutos(lista) {
+      const wrap = el('listaProdutos');
+      wrap.innerHTML = "";
+
+      if (!lista || lista.length === 0) {
+        wrap.innerHTML = `<div class="muted">Nenhum produto encontrado.</div>`;
+        return;
+      }
+
+      lista.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <div><strong>${prod.nome}</strong></div>
+              <div class="muted">Código: ${prod.codigo}</div>
+            </div>
+            <div class="right">
+              <div><strong>${R$(prod.preco)}</strong></div>
+              <div class="row" style="margin-top:8px; justify-content:flex-end">
+                <input type="number" id="qtd_${prod.codigo}" min="1" value="1" style="width:90px" />
+                <button onclick="adicionarProduto('${prod.codigo}')">Adicionar</button>
+              </div>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+    }
+
+    function buscarProdutos() {
+      const termo = el('q').value.trim().toLowerCase();
+      const msg = el('buscaMsg');
+
+      if (termo.length === 0) {
+        msg.innerHTML = `<div class="feedback">Mostrando todos os produtos.</div>`;
+        renderListaProdutos(PRODUTOS);
+        return;
+      }
+
+
+      const filtrados = PRODUTOS.filter(p =>
+        p.nome.toLowerCase().includes(termo) || p.codigo.toLowerCase() === termo
+      );
+
+      msg.innerHTML = `<div class="feedback">${filtrados.length} resultado(s) para <strong>${termo}</strong>.</div>`;
+      renderListaProdutos(filtrados);
+    }
+
+    function listarTodosProdutos() {
+      el('buscaMsg').innerHTML = `<div class="feedback">Catálogo completo.</div>`;
+      renderListaProdutos(PRODUTOS);
+    }
+
+    function adicionarProduto(codigo) {
+      if (!isLogado) {
+        alert("Você precisa estar logado para adicionar ao carrinho.");
+        return;
+      }
+      const produto = PRODUTOS.find(p => p.codigo === codigo);
+      if (!produto) return;
+
+      const qtdInput = el(`qtd_${codigo}`);
+      let qtd = 1;
+      if (qtdInput && Number(qtdInput.value) > 0) {
+        qtd = parseInt(qtdInput.value);
+      }
+
+
+      const idx = carrinho.findIndex(i => i.codigo === codigo);
+      if (idx >= 0) {
+        carrinho[idx].quantidade += qtd;
+      } else {
+        carrinho.push({ codigo: produto.codigo, nome: produto.nome, preco: produto.preco, quantidade: qtd });
+      }
+
+      atualizarCarrinhoDOM();
+      el('checkoutMsg').innerHTML = "";
+      el('resumoPedido').innerHTML = "";
+    }
+
+    function removerProduto(codigo) {
+      carrinho = carrinho.filter(i => i.codigo !== codigo);
+      atualizarCarrinhoDOM();
+    }
+
+    function limparCarrinho() {
+      carrinho = [];
+      atualizarCarrinhoDOM();
+    }
+
+    function atualizarCarrinhoDOM() {
+      const tbody = el('tabelaCarrinho');
+      const vazio = el('carrinhoVazio');
+      const tabelaWrap = el('tabelaCarrinhoWrap');
+      const totalGeral = el('totalGeral');
+      const cartCount = el('cartCount');
+
+      tbody.innerHTML = "";
+      let total = 0;
+      let count = 0;
+
+      if (carrinho.length === 0) {
+        vazio.classList.remove('hidden');
+        tabelaWrap.classList.add('hidden');
+      } else {
+        vazio.classList.add('hidden');
+        tabelaWrap.classList.remove('hidden');
+
+        carrinho.forEach(item => {
+          const subtotal = item.preco * item.quantidade;
+          total += subtotal;
+          count += item.quantidade;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.nome} <span class="muted">(${item.codigo})</span></td>
+            <td class="right">${R$(item.preco)}</td>
+            <td class="right">${item.quantidade}</td>
+            <td class="right">${R$(subtotal)}</td>
+            <td class="right"><button class="danger" onclick="removerProduto('${item.codigo}')">Remover</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      cartCount.textContent = count;
+      totalGeral.textContent = R$(total);
+    }
+
+    function finalizarCompra() {
+      const msg = el('checkoutMsg');
+      const resumo = el('resumoPedido');
+
+      if (carrinho.length === 0) {
+        msg.innerHTML = `<div class="feedback error">Seu carrinho está vazio.</div>`;
+        resumo.innerHTML = "";
+        return;
+      }
+
+
+      const itensResumo = carrinho.map(i => ({
+        ...i,
+        subtotal: i.preco * i.quantidade
+      }));
+      const total = itensResumo.reduce((acc, i) => acc + i.subtotal, 0);
+      const pedidoId = "PED" + Math.floor(100000 + Math.random() * 900000);
+
+
+      msg.innerHTML = `<div class="feedback">✅ Pedido finalizado com sucesso!</div>`;
+      const linhas = itensResumo.map(i =>
+        `<tr><td>${i.nome} <span class="muted">(${i.codigo})</span></td><td class="right">${i.quantidade}</td><td class="right">${R$(i.preco)}</td><td class="right">${R$(i.subtotal)}</td></tr>`
+      ).join("");
+
+      resumo.innerHTML = `
+        <div class="card">
+          <h3>Resumo do Pedido <span class="tag">${pedidoId}</span></h3>
+          <table>
+            <thead><tr><th>Item</th><th class="right">Qtd</th><th class="right">Preço</th><th class="right">Subtotal</th></tr></thead>
+            <tbody>${linhas}</tbody>
+            <tfoot><tr><td colspan="3" class="right">Total</td><td class="right">${R$(total)}</td></tr></tfoot>
+          </table>
+          <div class="muted" style="margin-top:8px">Data/Hora: ${new Date().toLocaleString("pt-BR")}</div>
+        </div>
+      `;
+
+
+      limparCarrinho();
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      el('btnLogin').addEventListener('click', login);
+      el('btnLogout').addEventListener('click', logout);
+      el('btnBuscar').addEventListener('click', buscarProdutos);
+      el('btnListar').addEventListener('click', listarTodosProdutos);
+      el('btnFinalizar').addEventListener('click', finalizarCompra);
+      el('btnLimpar').addEventListener('click', limparCarrinho);
+
+
+      el('q').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') buscarProdutos();
+      });
+
+      renderListaProdutos(PRODUTOS);
+    });
+  </script>
+</body>
+
+</html>
